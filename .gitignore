@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+
+
+stl.v12.suo
+stl.sdf
