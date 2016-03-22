@@ -18,5 +18,14 @@
     <ClInclude Include="src\construct.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\alloc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\allocator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\iterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
