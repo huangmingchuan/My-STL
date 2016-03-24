@@ -2,7 +2,8 @@
 #define _CONSTRUCT_H_
 
 #include <new>
-#include <type_traits>
+
+#include "type_traits.h"
 
 namespace mystl
 {
@@ -19,10 +20,10 @@ namespace mystl
 	}
 
 	template<typename ForwardIterator>
-	inline void _destroy(ForwardIterator first, ForwardIterator last, std::true_type) {}
+	inline void _destroy(ForwardIterator first, ForwardIterator last, _true_type) {}
 
 	template<typename ForwardIterator>
-	inline void _destroy(ForwardIterator first, ForwardIterator last, std::false_type)
+	inline void _destroy(ForwardIterator first, ForwardIterator last, _false_type)
 	{
 		for (; first != last; ++first)
 		{
@@ -33,8 +34,8 @@ namespace mystl
 	template<typename ForwardIterator>
 	inline void destroy(ForwardIterator first, ForwardIterator last)
 	{
-		typedef typename std::is_pod<ForwardIterator> pod_type;
-		_destroy(first, last, pod_type);
+		typedef typename _type_traits<ForwardIterator>::is_POD_type is_POD_type;
+		_destroy(first, last, is_POD_type);
 	}
 }
 
