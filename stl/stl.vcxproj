@@ -15,6 +15,12 @@
     <ClInclude Include="src\allocator.h" />
     <ClInclude Include="src\construct.h" />
     <ClInclude Include="src\iterator.h" />
+    <ClInclude Include="src\reverse_iterator.h" />
+    <ClInclude Include="src\type_traits.h" />
+    <ClInclude Include="src\uninitialized_functions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B80D5861-4DD8-4107-8156-84DCCBA03829}</ProjectGuid>
