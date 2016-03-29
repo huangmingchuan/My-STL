@@ -62,8 +62,7 @@ namespace mystl
 	template <typename ForwardIterator, typename T>
 	void _uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T& value, _true_type)
 	{
-		//TODO
-		//换成自己的 fill 函数
+		//TODO : 换成自己的 fill 函数
 		std::fill(first, last, value);
 	}
 
@@ -95,8 +94,7 @@ namespace mystl
 	template <typename ForwardIterator, typename Size, typename T>
 	ForwardIterator _uninitialized_fill_n_aux(ForwardIterator first, Size n, const T& value, _true_type)
 	{
-		//TODO
-		//换成自己的 fill_n 函数
+		//TODO : 换成自己的 fill_n 函数
 		return std::fill_n(first, n, value);
 	}
 
