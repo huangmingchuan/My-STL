@@ -4,25 +4,23 @@
 #include "src\allocator.h"
 #include "src\construct.h"
 #include "src\uninitialized_functions.h"
+#include "src\vector.h"
 
 using namespace std;
 
 int main()
 {
-	auto p = mystl::allocator<int>::allocate(100);
-	auto last = p + 100;
-	//mystl::uninitialized_fill(p, p + 100, 88);
-	for (int i = 0; i != 100; ++i)
-	{
-		mystl::allocator<int>::construct(p + i, i);
-	}
-	for (; p != last; ++p)
-		cout << *p << ", ";
-	cout << endl;
+	int array[3] = { 1, 2, 3 };
+	mystl::vector<int> vec(array, array + 3);
 
-	int array[100];
-	mystl::uninitialized_fill_n(array, 100, 99);
-	for (auto n : array)
-		cout << n << ", ";
+	cout << *vec.begin() << endl;
+	cout << *(++vec.begin()) << endl;
+	cout << *(--vec.end()) << endl;
+	cout << "------------------" << endl;
+
+	/*mystl::vector<int> vec2(3, 9);
+	cout << *vec2.begin() << endl;
+	cout << *(++vec2.begin()) << endl;
+	cout << *(--vec2.end()) << endl;*/
 	return 0;
 }

@@ -18,6 +18,7 @@
     <ClInclude Include="src\reverse_iterator.h" />
     <ClInclude Include="src\type_traits.h" />
     <ClInclude Include="src\uninitialized_functions.h" />
+    <ClInclude Include="src\vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
