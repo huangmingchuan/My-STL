@@ -1,6 +1,8 @@
 #ifndef _VECTOR_H_
 #define _VECTOR_H_
 
+#include <type_traits>
+
 #include "allocator.h"
 #include "iterator.h"
 #include "uninitialized_functions.h"
@@ -88,6 +90,13 @@ namespace mystl
 		iterator begin() { return iterator(start_); }
 		iterator end() { return iterator(finish_); }
 
+		//修改容器相关的操作
+		void clear()
+		{
+			dataAllocator::destroy(start_, finish_);
+			finish_ = start_;
+		}
+
 	private:
 		void allocateAndFill(const size_type n, const value_type& value)
 		{
@@ -103,8 +112,23 @@ namespace mystl
 			finish_ = uninitialized_copy(begin, end, start_);
 			endOfStorage_ = finish_;
 		}
+
+		template <typename InputIterator>
+		void vector_aux(InputIterator first, InputIterator last, std::false_type)
+		{
+			allocateAndCopy(first, last);
+		}
+
+		template <typename Integer>
+		void vector_aux(Integer n, Integer value, std::true_type)
+		{
+			allocateAndFill(n, value);
+		}
 	};
 
+	/*
+		构造函数
+	*/
 	template <typename T, typename Alloc>
 	vector<T, Alloc>::vector(const size_type n)
 	{
@@ -121,7 +145,40 @@ namespace mystl
 	template <typename It>
 	vector<T, Alloc>::vector(It begin, It end)
 	{
-		allocateAndCopy(begin, end);
+		//处理指针和数字间区别的函数   vector 有两种实例化  v(begin, end) 和 v(n,x)
+		vector_aux(begin, end, typename std::is_integral<It>::type());
+	}
+
+	/*
+		拷贝构造函数
+	*/
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(const vector& v)
+	{
+		allocateAndCopy(v.start_, v.finish_);
+	}
+
+	/*
+		移动构造函数
+	*/
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(vector&& v)
+	{
+		start_ = v.start_;
+		finish_ = v.finish_;
+		endOfStorage_ = v.endOfStorage_;
+		v.clear();
+	}
+
+	/*
+		拷贝赋值运算符
+	*/
+	template <typename T, typename Alloc>
+	vector<T, Alloc>& vector<T, Alloc>::operator=(const vector& v)
+	{
+		if (this != &v)
+			allocateAndCopy(v.start_, v.finish_);
+		return *this;
 	}
 }
 

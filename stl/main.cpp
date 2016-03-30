@@ -18,9 +18,9 @@ int main()
 	cout << *(--vec.end()) << endl;
 	cout << "------------------" << endl;
 
-	/*mystl::vector<int> vec2(3, 9);
+	mystl::vector<int> vec2(3, 9);
 	cout << *vec2.begin() << endl;
 	cout << *(++vec2.begin()) << endl;
-	cout << *(--vec2.end()) << endl;*/
+	cout << *(--vec2.end()) << endl;
 	return 0;
 }
