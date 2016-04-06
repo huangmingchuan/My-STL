@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "src\allocator.h"
 #include "src\construct.h"
@@ -22,5 +23,8 @@ int main()
 	cout << *vec2.begin() << endl;
 	cout << *(++vec2.begin()) << endl;
 	cout << *(--vec2.end()) << endl;
+
+	mystl::vector<string> svec(10, "hello");
+	for (auto s : svec) cout << s << endl;
 	return 0;
 }

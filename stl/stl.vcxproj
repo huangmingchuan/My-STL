@@ -19,6 +19,7 @@
     <ClInclude Include="src\type_traits.h" />
     <ClInclude Include="src\uninitialized_functions.h" />
     <ClInclude Include="src\vector.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
