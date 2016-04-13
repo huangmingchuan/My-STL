@@ -5,6 +5,8 @@
 
 #include "allocator.h"
 #include "iterator.h"
+#include "algorithm.h"
+#include "reverse_iterator.h"
 #include "uninitialized_functions.h"
 
 namespace mystl
