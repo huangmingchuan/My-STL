@@ -114,7 +114,74 @@ namespace mystl
 		template <typename T, typename Alloc>
 		friend bool operator!=(const vector<T, Alloc>& v1, const vector<T, Alloc>& v2);
 	};
+
+	//构造、拷贝、赋值、析构函数
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::~vector()
+	{
+		destroyAndDeallocateAll();
+	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(const size_type n)
+	{
+		allocateAndFillN(n, value_type());
+	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(const size_type n, const value_type& value)
+	{
+		allocateAndFillN(n, value);
+	}
 	
+	template <typename T, typename Alloc>
+	template <typename InputIterator>
+	vector<T, Alloc>::vector(InputIterator first, InputIterator last)
+	{
+		//处理指针和数值之间的区别
+		vector_aux(first, last, typename std::is_integral<InputIterator>::type());
+	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(const vector& v)
+	{
+		allocateAndCopy(v.start_, v.finishi_);
+	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(vector&& v)
+	{
+		start_ = v.start_;
+		finishi_ = v.finishi_;
+		endOfStorage_ = v.endOfStorage_;
+		v.start_ = v.finishi_ = v.endOfStorage_ == nullptr;
+	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>& vector<T, Alloc>::operator=(const vector& v)
+	{
+		if (this != &v)
+		{
+			allocateAndCopy(v.start_, v.finishi_);
+		}
+		return *this;
+	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>& vector<T, Alloc>::operator=(vector&& v)
+	{
+		if (this != &v)
+		{
+			destroyAndDeallocateAll();
+			start_ = v.start_;
+			finishi_ = v.finishi_;
+			endOfStorage_ = v.endOfStorage_;
+			v.start_ = v.finishi_ = v.endOfStorage_ = nullptr;
+		}
+		return *this;
+	}
+
+
 }
 
 #endif
