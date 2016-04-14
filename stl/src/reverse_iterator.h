@@ -33,7 +33,7 @@ namespace mystl
 		template<typename Iter>
 		explicit reverse_iterator_t(const reverse_iterator_t<Iter>& rev_it)
 		{
-			base = (iterator_type)rev_it.base();
+			base_ = (iterator_type)rev_it.base();
 			auto temp = base_;
 			cur_ = --temp;
 		}

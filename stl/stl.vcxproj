@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\algorithm.h" />
     <ClInclude Include="src\alloc.h" />
     <ClInclude Include="src\allocator.h" />
     <ClInclude Include="src\construct.h" />
