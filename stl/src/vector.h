@@ -2,6 +2,7 @@
 #define _VECTOR_H_
 
 #include <type_traits>
+#include <algorithm>
 
 #include "allocator.h"
 #include "iterator.h"
@@ -92,7 +93,6 @@ namespace mystl
 		void destroyAndDeallocateAll();
 		void allocateAndFillN(const size_type n, const value_type& value);
 		template <typename InputIterator>
-		// 这个用在哪
 		void allocateAndCopy(InputIterator first, InputIterator last);
 
 		template <typename InputIterator>
@@ -181,7 +181,302 @@ namespace mystl
 		return *this;
 	}
 
+	//容量相关
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::resize(size_type n, value_type val = value_type())
+	{
+		if (n < size())
+		{
+			dataAllocator::destroy(start_ + n, finishi_);
+			finishi_ = start_ + n;
+		}
+		else if (n > size() && n <= capacity())
+		{
+			auto lenOfInsert = n - size();
+			finishi_ = mystl::uninitialized_fill_n(finishi_, lenOfInsert, val);
+		}
+		else if (n > capacity())
+		{
+			auto lenOfInsert = n - size();
+			T *newStart = dataAllocator::allocate(getNewCapacity(lenOfInsert));
+			T *newFinish = mystl::uninitialized_copy(begin(), end(), newStart);
+			newFinish = mystl::uninitialized_fill_n(finishi_, lenOfInsert, val);
+			destroyAndDeallocateAll();
+			start_ = newStart;
+			finishi_ = newFinish;
+			endOfStorage_ = start_ + n;
+		}
+	}
 
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::reserve(size_type n)
+	{
+		if (n <= capacity()) return;
+		T *newStart = dataAllocator::allocate(n);
+		T *newFinish = mystl::uninitialized_copy(begin(), end(), newStart);
+		destroyAndDeallocateAll();
+		start_ = newStart;
+		finishi_ = newFinish;
+		endOfStorage_ = start_ + n;
+	}
+	
+	// 修改容器相关
+	template <typename T, typename Alloc>
+	typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator position)
+	{
+		return erase(position, position + 1);
+	}
+
+	template <typename T, typename Alloc>
+	typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator first, iterator last)
+	{
+		//尾部残留对象数
+		difference_type lenOfTail = end() - last;
+		//删除的对象数
+		difference_type lenOfRemove = last - first;
+		finishi_ = finishi_ - lenOfRemove;
+		for (; lenOfTail != 0; --lenOfTail)
+		{
+			auto temp = last - lenOfRemove;
+			*temp = *(last++);
+		}
+		return first;
+	}
+
+	template <typename T, typename Alloc>
+	template <typename InputIterator>
+	void vector<T, Alloc>::reallocateAndCopy(iterator position, InputIterator first, InputIterator last)
+	{
+		difference_type newCapacity = getNewCapacity(last - first);
+		T *newStart = dataAllocator::allocate(newCapacity);
+		T *newEndOfStorage = newStart + newCapacity;
+		T *newFinish = mystl::uninitialized_copy(begin(), position, newStart);
+		newFinish = mystl::uninitialized_copy(first, last, newFinish);
+		newFinish = mystl::uninitialized_copy(position, end(), newFinish);
+
+		destroyAndDeallocateAll();
+		start_ = newStart;
+		finishi_ = newFinish;
+		endOfStorage_ = newEndOfStorage;
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::reallocateAndFillN(iterator position, const size_type& n, const value_type& val)
+	{
+		difference_type newCapacity = getNewCapacity(n);
+		T *newStart = dataAllocator::allocate(newCapacity);
+		T *newEndOfStorage = newStart + newCapacity;
+		T *newFinish = mystl::uninitialized_copy(begin(), position, newStart);
+		newFinish = mystl::uninitialized_fill_n(newFinish, n, val);
+		newFinish = mystl::uninitialized_copy(position, end(), newFinish);
+
+		destroyAndDeallocateAll();
+		start_ = newStart;
+		finishi_ = newFinish;
+		endOfStorage_ = newEndOfStorage;
+	}
+
+	template <typename T, typename Alloc>
+	template <typename InputIterator>
+	void vector<T, Alloc>::insert_aux(iterator position, InputIterator first, InputIterator last, std::false_type)
+	{
+		difference_type locationLeft = endOfStorage_ - finishi_;
+		difference_type locationNeed = std::distance(first, last);
+
+		if (locationLeft >= locationNeed)
+		{
+			if (finishi_ - position > locationNeed)
+			{
+				mystl::uninitialized_copy(finishi_ - locationNeed, finishi_, finishi_);
+				std::copy_backward(position, finishi_ - locationNeed, finishi_);
+				std::copy(first, last, position);
+			}
+			else
+			{
+				iterator temp = mystl::uninitialized_copy(first + (finishi_ - position), last, finishi_);
+				mystl::uninitialized_copy(position, finishi_, temp);
+				std::copy(first, first + (finishi_ - position), position);
+			}
+			finishi_ += locationNeed;
+		}
+		else
+		{
+			reallocateAndCopy(position, first, last);
+		}
+	}
+
+	template <typename T, typename Alloc>
+	template <typename Integer>
+	void vector<T, Alloc>::insert_aux(iterator position, Integer n, const value_type& value, std::true_type)
+	{
+		assert(n != 0);
+		difference_type locationLeft = endOfStorage_ - finishi_;
+		difference_type locationNeed = n;
+
+		if (locationLeft >= locationNeed)
+		{
+			auto temp = end() - 1;
+			for (; temp - position >= 0; --temp)
+			{
+				construct(temp + locationNeed, *temp);
+			}
+			mystl::uninitialized_fill_n(position, n, value); 
+			finishi_ += locationNeed;
+		}
+		else
+		{
+			reallocateAndFillN(position, n, value);
+		}
+	}
+
+	template <typename T, typename Alloc>
+	template <typename InputIterator>
+	void vector<T, Alloc>::insert(iterator position, InputIterator first, InputIterator last)
+	{
+		insert_aux(position, first, last, typename std::is_integral<InputIterator>::type());
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::insert(iterator position, const size_type& n, const value_type& val)
+	{
+		insert_aux(position, n, val, typename std::is_integral<size_type>::type());
+	}
+
+	template <typename T, typename Alloc>
+	typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator position, const value_type& val)
+	{
+		const auto index = position - begin();
+		insert(position, 1, val);
+		return begin() + index;
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::push_back(const value_type& val)
+	{
+		insert(end(), val);
+	}
+
+	//逻辑比较相关
+	template <typename T, typename Alloc>
+	bool vector<T, Alloc>::operator==(const vector& v) const
+	{
+		if (size() != v.size()) 
+			return false;
+		else
+		{
+			auto p1 = start_;
+			auto p2 = v.start_;
+			for (; p1 != finishi_ && p2 != v.finishi_; ++p1, ++p2)
+			{
+				if (*p1 != *p2)
+					return false;
+			}
+			return true;
+		}
+	}
+
+	template <typename T, typename Alloc>
+	bool vector<T, Alloc>::operator!=(const vector& v) const
+	{
+		return !(this == v);
+	}
+
+	template <typename T, typename Alloc>
+	bool operator==(const vector<T, Alloc>& v1, const vector<T, Alloc>& v2)
+	{
+		return v1.operator==(v2);
+	}
+
+	template <typename T, typename Alloc>
+	bool operator!=(const vector<T, Alloc>& v1, const vector<T, Alloc>& v2)
+	{
+		return !(v1 == v2);
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::shrink_to_fit()
+	{
+		T* t = (T*)dataAllocator::allocate(size());
+		finishi_ = mystl::uninitialized_copy(start_, finishi_, t);
+		dataAllocator::deallocate(start_, capacity());
+		start_ = t;
+		endOfStorage_ = finishi_;
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::clear()
+	{
+		dataAllocator::destroy(start_, finishi_);
+		finishi_ = start_;
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::swap(vector& v)
+	{
+		if (this != &v)
+		{
+			std::swap(start_, v.start_);
+			std::swap(finishi_, v.finishi_);
+			std::swap(endOfStorage_, v.endOfStorage_);
+		}
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::pop_back()
+	{
+		--finishi_;
+		dataAllocator::destroy(finishi_);
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::destroyAndDeallocateAll()
+	{
+		if (capacity() != 0)
+		{
+			dataAllocator::destroy(start_, finishi_);
+			dataAllocator::deallocate(start_, endOfStorage_);
+		}
+	}
+
+	template <typename T, typename Alloc>
+	void vector<T, Alloc>::allocateAndFillN(const size_type n, const value_type& value)
+	{
+		start_ = dataAllocator::allocate(n);
+		mystl::uninitialized_fill_n(start_, n, value);
+		finishi_ = endOfStorage_ = start_ + n;
+	}
+
+	template <typename T, typename Alloc>
+	template <typename InputIterator>
+	void vector<T, Alloc>::allocateAndCopy(InputIterator first, InputIterator last)
+	{
+		start_ = dataAllocator::allocate(last - first);
+		finishi_ = mystl::uninitialized_copy(first, last, start_);
+		endOfStorage_ = finishi_;
+	}
+
+	template <typename T, typename Alloc>
+	template <typename InputIterator>
+	void vector<T, Alloc>::vector_aux(InputIterator first, InputIterator last, std::false_type)
+	{
+		allocateAndCopy(first, last);
+	}
+
+	template <typename T, typename Alloc>
+	template <typename Integer>
+	void vector<T, Alloc>::vector_aux(Integer n, const value_type& value, std::true_type)
+	{
+		allocateAndFillN(n, value);
+	}
+
+	template <typename T, typename Alloc>
+	typename vector<T, Alloc>::size_type vector<T, Alloc>::getNewCapacity(size_type len) const
+	{
+		size_type oldCapacity = endOfStorage_ - start_;
+		auto res = std::max(oldCapacity, len);
+		size_type newCapacity = oldCapacity != 0 ? (oldCapacity + res) : len;
+		return newCapacity;
+	}
 }
 
 #endif
