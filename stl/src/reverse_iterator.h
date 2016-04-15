@@ -157,7 +157,7 @@ namespace mystl
 	}
 
 	template<typename Iterator>
-	reverse_iterator_t<Iterator> reverse_iterator_t<Iterator>::operator+(difference_type n)
+	reverse_iterator_t<Iterator> reverse_iterator_t<Iterator>::operator+(difference_type n) const 
 	{
 		reverse_iterator_t<Iterator> res = *this;
 		res += n;
@@ -165,7 +165,7 @@ namespace mystl
 	}
 
 	template<typename Iterator>
-	reverse_iterator_t<Iterator> reverse_iterator_t<Iterator>::operator-(difference_type n)
+	reverse_iterator_t<Iterator> reverse_iterator_t<Iterator>::operator-(difference_type n) const
 	{
 		reverse_iterator_t<Iterator> res = *this;
 		res -= n;

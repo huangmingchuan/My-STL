@@ -434,7 +434,7 @@ namespace mystl
 		if (capacity() != 0)
 		{
 			dataAllocator::destroy(start_, finishi_);
-			dataAllocator::deallocate(start_, endOfStorage_);
+			dataAllocator::deallocate(start_, capacity());
 		}
 	}
 

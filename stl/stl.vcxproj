@@ -20,10 +20,13 @@
     <ClInclude Include="src\type_traits.h" />
     <ClInclude Include="src\uninitialized_functions.h" />
     <ClInclude Include="src\vector.h" />
-    <ClInclude Include="test.h" />
+    <ClInclude Include="test\vector_test.h" />
+    <ClInclude Include="test_util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\alloc.cpp" />
+    <ClCompile Include="test\vector_test.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B80D5861-4DD8-4107-8156-84DCCBA03829}</ProjectGuid>
