@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <algorithm>
+#include <iostream>
 
 #include "allocator.h"
 #include "iterator.h"
@@ -146,6 +147,7 @@ namespace mystl
 	vector<T, Alloc>::vector(const vector& v)
 	{
 		allocateAndCopy(v.start_, v.finishi_);
+		std::cout << "copy constructor " << std::endl;
 	}
 
 	template <typename T, typename Alloc>
@@ -155,6 +157,7 @@ namespace mystl
 		finishi_ = v.finishi_;
 		endOfStorage_ = v.endOfStorage_;
 		v.start_ = v.finishi_ = v.endOfStorage_ = nullptr;
+		std::cout << "move constructor " << std::endl;
 	}
 
 	template <typename T, typename Alloc>
@@ -164,6 +167,7 @@ namespace mystl
 		{
 			allocateAndCopy(v.start_, v.finishi_);
 		}
+		std::cout << "copy assignment " << std::endl;
 		return *this;
 	}
 
@@ -178,6 +182,7 @@ namespace mystl
 			endOfStorage_ = v.endOfStorage_;
 			v.start_ = v.finishi_ = v.endOfStorage_ = nullptr;
 		}
+		std::cout << "move assignment " << std::endl;
 		return *this;
 	}
 
