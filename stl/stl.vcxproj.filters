@@ -42,10 +42,10 @@
     <ClInclude Include="src\algorithm.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="test_util.h">
+    <ClInclude Include="test\vector_test.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="test\vector_test.h">
+    <ClInclude Include="test\test_util.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

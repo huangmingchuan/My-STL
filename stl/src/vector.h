@@ -154,7 +154,7 @@ namespace mystl
 		start_ = v.start_;
 		finishi_ = v.finishi_;
 		endOfStorage_ = v.endOfStorage_;
-		v.start_ = v.finishi_ = v.endOfStorage_ == nullptr;
+		v.start_ = v.finishi_ = v.endOfStorage_ = nullptr;
 	}
 
 	template <typename T, typename Alloc>
