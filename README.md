@@ -40,6 +40,7 @@
 ```
 
 结果会是这样：
+
 ![image](https://github.com/huangmingchuan/My-STL/raw/master/pic/pic1.png)
 
 那么什么是拷贝构造、什么是移动构造，什么是拷贝赋值、什么是移动赋值就自然而然理解了。
