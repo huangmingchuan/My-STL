@@ -21,9 +21,6 @@ namespace mystl
 		template <typename T>
 		using my_vector = mystl::vector<T>;
 
-		void test_case1();
-		void test_case2();
-
 		void test_all_case();
 	}
 }

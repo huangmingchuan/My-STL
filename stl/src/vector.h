@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <algorithm>
 #include <iostream>
+#include <initializer_list>
 
 #include "allocator.h"
 #include "iterator.h"
@@ -40,6 +41,7 @@ namespace mystl
 		vector() :start_(nullptr), finishi_(nullptr), endOfStorage_(nullptr) {}
 		explicit vector(const size_type n);
 		vector(const size_type n, const value_type& value);
+		vector(const std::initializer_list<T>& l);
 		template <typename InputIterator>
 		vector(InputIterator first, InputIterator last);
 		vector(const vector& v);
@@ -134,6 +136,12 @@ namespace mystl
 	{
 		allocateAndFillN(n, value);
 	}
+
+	template <typename T, typename Alloc>
+	vector<T, Alloc>::vector(const std::initializer_list<T>& l)
+	{
+		vector_aux(l.begin(), l.end(), std::false_type());
+	}
 	
 	template <typename T, typename Alloc>
 	template <typename InputIterator>
@@ -205,7 +213,7 @@ namespace mystl
 			auto lenOfInsert = n - size();
 			T *newStart = dataAllocator::allocate(getNewCapacity(lenOfInsert));
 			T *newFinish = mystl::uninitialized_copy(begin(), end(), newStart);
-			newFinish = mystl::uninitialized_fill_n(finishi_, lenOfInsert, val);
+			newFinish = mystl::uninitialized_fill_n(newFinish, lenOfInsert, val);
 			destroyAndDeallocateAll();
 			start_ = newStart;
 			finishi_ = newFinish;
@@ -383,7 +391,7 @@ namespace mystl
 	template <typename T, typename Alloc>
 	bool vector<T, Alloc>::operator!=(const vector& v) const
 	{
-		return !(this == v);
+		return !(*this == v);
 	}
 
 	template <typename T, typename Alloc>

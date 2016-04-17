@@ -2,6 +2,7 @@
 简单的 STL，采用 C++ 11 实现。
 
 目的：在于掌握 STL 以及 C++模版编程。
+
 编译环境：VS2013。
 
 背景：
@@ -39,7 +40,7 @@
 ```
 
 结果会是这样：
-！[image](https://github.com/huangmingchuan/My-STL/raw/master/pic/pic1.png)
+![image](https://github.com/huangmingchuan/My-STL/raw/master/pic/pic1.png)
 
 那么什么是拷贝构造、什么是移动构造，什么是拷贝赋值、什么是移动赋值就自然而然理解了。
 
