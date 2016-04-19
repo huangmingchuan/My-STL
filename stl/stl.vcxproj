@@ -16,6 +16,7 @@
     <ClInclude Include="src\allocator.h" />
     <ClInclude Include="src\construct.h" />
     <ClInclude Include="src\iterator.h" />
+    <ClInclude Include="src\list.h" />
     <ClInclude Include="src\reverse_iterator.h" />
     <ClInclude Include="src\type_traits.h" />
     <ClInclude Include="src\uninitialized_functions.h" />

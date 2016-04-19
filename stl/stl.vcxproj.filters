@@ -48,6 +48,9 @@
     <ClInclude Include="test\test_util.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
