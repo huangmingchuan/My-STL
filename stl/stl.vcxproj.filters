@@ -51,6 +51,9 @@
     <ClInclude Include="src\list.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="test\list_test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="src\alloc.cpp">
       <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test\list_test.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

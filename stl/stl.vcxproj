@@ -21,12 +21,14 @@
     <ClInclude Include="src\type_traits.h" />
     <ClInclude Include="src\uninitialized_functions.h" />
     <ClInclude Include="src\vector.h" />
+    <ClInclude Include="test\list_test.h" />
     <ClInclude Include="test\test_util.h" />
     <ClInclude Include="test\vector_test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\alloc.cpp" />
+    <ClCompile Include="test\list_test.cpp" />
     <ClCompile Include="test\vector_test.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
