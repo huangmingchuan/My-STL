@@ -313,7 +313,7 @@ namespace mystl
 	template <typename T>
 	void list<T>::push_front(const value_type& val)
 	{
-		auto node = newNode();
+		auto node = newNode(val);
 		head.p->prev = node;
 		node->next = head.p;
 		head.p = node;
@@ -685,6 +685,7 @@ namespace mystl
 		 sort(std::less<T>());
 	 }
 
+	 //自底向上归并排序
 	 template <typename T>
 	 template <typename Compare>
 	 void list<T>::sort(Compare comp)
