@@ -282,7 +282,6 @@ namespace mystl
 	}
 	size_t string::find(const char* s, size_t pos, size_t n) const
 	{
-		size_t lenghtOfS = strlen(s);
 		return find_aux(s, pos, n, size());
 	}
 	size_t string::find(const string& str, size_t pos) const
@@ -497,12 +496,10 @@ namespace mystl
 	std::istream& operator >> (std::istream& is, string& str)
 	{
 		char ch;
-		string::size_type oldSize = str.size(), index = 0;
-		bool hasPrevBlank = false;
 		while (is.get(ch))
 		{
 			if (isblank(ch) || ch == '\n')
-				hasPrevBlank = true;
+				continue;
 			else
 				break;
 		}
