@@ -54,6 +54,12 @@
     <ClInclude Include="test\list_test.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\string.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="test\string_test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +72,12 @@
       <Filter>头文件</Filter>
     </ClCompile>
     <ClCompile Include="test\list_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test\string_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\string.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
