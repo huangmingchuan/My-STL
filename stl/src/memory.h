@@ -82,7 +82,7 @@ namespace mystl
 		{
 			if (_count_ptr != nullptr) _count_ptr->add_ref_count();
 		}
-		shared_count& operator=(const shared_count& r) 
+		shared_count& operator=(const shared_count& r)
 		{
 			if (this != &r)
 			{
@@ -108,6 +108,199 @@ namespace mystl
 			return use_count() == 0;
 		}
 	};
+
+	template <typename T>
+	class shared_ptr
+	{
+	public:
+		using value_type = T;
+		using pointer = T*;
+		using reference = T&;
+		using const_pointer = const T*;
+		using const_reference = const T&;
+		using size_type = std::size_t;
+		using difference_type = std::ptrdiff_t;
+	private:
+		T* _ptr;
+		shared_count<T> count;
+	public:
+		shared_ptr() :_ptr(0), count() {}
+		shared_ptr(T* p) :_ptr(p), count(p) {}
+		template <typename D>
+		shared_ptr(T* p, D d) : _ptr(p), count(p, d) {}
+		shared_ptr(shared_ptr&& rhs) :_ptr(rhs._ptr), count()
+		{
+			count.swap(rhs.count);
+			rhs._ptr = nullptr;
+		}
+		shared_ptr(shared_ptr& rhs) = default;
+		~shared_ptr() = default;
+		shared_ptr& opeartor = (shared_ptr& rhs)
+		{
+			_ptr = rhs._ptr;
+			count = rhs.count;
+			return *this;
+		}
+
+		void reset()
+		{
+			shared_ptr().swap(*this);
+		}
+
+		reference opeartor*() const
+		{
+			return *_ptr;
+		}
+
+		pointer opeartor->() const
+		{
+			return &(operator*());
+		}
+
+		pointer get() const { return _ptr; }
+
+		explicit operator bool() const
+		{
+			return _ptr == nullptr ? false : true;
+		}
+
+		bool unique() const
+		{
+			return count.unique();
+		}
+
+		long use_count() const
+		{
+			return count.use_count();
+		}
+
+		template <typename SubT>
+		void reset(SubT* p)
+		{
+			shared_ptr(p).swap(*this);
+		}
+
+		void swap(shared_ptr<T>& rhs)
+		{
+			std::swap(_ptr, rhs._ptr);
+			count.swap(rhs.count);
+		}
+	};
+
+	template <typename T>
+	bool operator==(shared_ptr<T>& lhs, shared_ptr<T>& rhs)
+	{
+		return lhs.get() == rhs.get();
+	}
+
+	template <typename T>
+	bool operator!=(shared_ptr<T>& lhs, shared_ptr<T>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <typename T, typename ...Args>
+	shared_ptr<T> make_shared(Args... args)
+	{
+		return shared_ptr<T>(new T(std::forward<Args>(args)...));
+	}
+
+	template <typename T>
+	struct default_deleter
+	{
+		void operator()(T* p)
+		{
+			if (p) delete p;
+		}
+	};
+
+	template <typename T, typename Deleter = default_deleter<T>>
+	class unique_ptr
+	{
+	public:
+		using value_type = T;
+		using pointer = T*;
+		using const_pointer = const T*;
+		using reference = T&;
+		using const_reference = const T&;
+		using size_type = std::size_t;
+	private:
+		T* _ptr;
+		Deleter Del;
+	public:
+		unique_ptr() :_ptr(nullptr), Del(Deleter()) {}
+		unique_ptr(pointer p) :_Ptr(p), Del(Deleter()) {}
+		unique_ptr(pointer p, Deleter&&d) :_Ptr(p), Del(std::move(d)) {}
+		unique_ptr(unique_ptr&&rhs) :_Ptr(std::move(rhs._Ptr)), Del(std::move(rhs.Del))
+		{
+			rhs._Ptr = nullptr;
+		}
+		unique_ptr& operator=(unique_ptr&& rhs)
+		{
+			_Ptr = std::move(rhs._Ptr);
+			Del = std::move(rhs.Del);
+			rhs._Ptr = nullptr;
+		}
+		~unique_ptr()
+		{
+			Del(_ptr);
+		}
+		unique_ptr(unique_ptr& rhs) = delete;
+		unique_ptr& operator=(unique_ptr& rhs) = delete;
+
+		reference operator*() const
+		{
+			return *_ptr;
+		}
+
+		pointer operator->() const
+		{
+			return &(operator*());
+		}
+
+		pointer get() const
+		{
+			return _ptr;
+		}
+
+		pointer release()
+		{
+			pointer temp = _ptr;
+			_ptr = nullptr;
+			return temp;
+		}
+
+		void reset(pointer p = nullptr)
+		{
+			pointer temp = _ptr;
+			_ptr = p;
+			if (temp) Del(temp);
+		}
+
+		void swap(unique_ptr& rhs)
+		{
+			std::swap(_ptr, rhs._ptr);
+			std::swap(Del, rhs.Del);
+		}
+	};
+
+	template <typename T>
+	bool operator==(unique_ptr<T>& lhs, unique_ptr<T>& rhs)
+	{
+		return lhs.get() == rhs.get();
+	}
+
+	template <typename T>
+	bool operator!=(unique_ptr<T>& lhs, unique_ptr<T>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template<typename T>
+	void swap(unique_ptr<T>&rhs, unique_ptr<T>&lhs)
+	{
+		rhs.swap(lhs);
+	}
 }
 
 #endif
