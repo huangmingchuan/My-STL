@@ -55,6 +55,9 @@
 	* iterator_traits
 	* vector
 	* list
+	* string
+	* shared_ptr
+	* unique_ptr
 
 性能测试：
 -------------

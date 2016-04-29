@@ -703,6 +703,7 @@ namespace mystl
 			 {
 				 counter[i].merge(carry, comp);
 				 carry.swap(counter[i++]);
+				 //carry.merge(counter[i++], comp);  这样归并貌似也行
 			 }
 			 carry.swap(counter[i]);
 			 if (i == fill)
