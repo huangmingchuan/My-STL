@@ -135,7 +135,8 @@ namespace mystl
 		}
 		shared_ptr(shared_ptr& rhs) = default;
 		~shared_ptr() = default;
-		shared_ptr& opeartor = (shared_ptr& rhs)
+
+		shared_ptr& operator=(shared_ptr& rhs)
 		{
 			_ptr = rhs._ptr;
 			count = rhs.count;
@@ -147,12 +148,12 @@ namespace mystl
 			shared_ptr().swap(*this);
 		}
 
-		reference opeartor*() const
+		reference operator*() const
 		{
 			return *_ptr;
 		}
 
-		pointer opeartor->() const
+		pointer operator->() const
 		{
 			return &(operator*());
 		}
@@ -229,17 +230,18 @@ namespace mystl
 		Deleter Del;
 	public:
 		unique_ptr() :_ptr(nullptr), Del(Deleter()) {}
-		unique_ptr(pointer p) :_Ptr(p), Del(Deleter()) {}
-		unique_ptr(pointer p, Deleter&&d) :_Ptr(p), Del(std::move(d)) {}
-		unique_ptr(unique_ptr&&rhs) :_Ptr(std::move(rhs._Ptr)), Del(std::move(rhs.Del))
+		unique_ptr(pointer p) :_ptr(p), Del(Deleter()) {}
+		unique_ptr(pointer p, Deleter&&d) :_ptr(p), Del(std::move(d)) {}
+		unique_ptr(unique_ptr&&rhs) :_ptr(std::move(rhs._ptr)), Del(std::move(rhs.Del))
 		{
-			rhs._Ptr = nullptr;
+			rhs._ptr = nullptr;
 		}
 		unique_ptr& operator=(unique_ptr&& rhs)
 		{
-			_Ptr = std::move(rhs._Ptr);
+			_ptr = std::move(rhs._ptr);
 			Del = std::move(rhs.Del);
-			rhs._Ptr = nullptr;
+			rhs._ptr = nullptr;
+			return *this;
 		}
 		~unique_ptr()
 		{

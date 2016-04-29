@@ -17,12 +17,14 @@
     <ClInclude Include="src\construct.h" />
     <ClInclude Include="src\iterator.h" />
     <ClInclude Include="src\list.h" />
+    <ClInclude Include="src\memory.h" />
     <ClInclude Include="src\reverse_iterator.h" />
     <ClInclude Include="src\string.h" />
     <ClInclude Include="src\type_traits.h" />
     <ClInclude Include="src\uninitialized_functions.h" />
     <ClInclude Include="src\vector.h" />
     <ClInclude Include="test\list_test.h" />
+    <ClInclude Include="test\memory_test.h" />
     <ClInclude Include="test\string_test.h" />
     <ClInclude Include="test\test_util.h" />
     <ClInclude Include="test\vector_test.h" />
@@ -32,8 +34,12 @@
     <ClCompile Include="src\alloc.cpp" />
     <ClCompile Include="src\string.cpp" />
     <ClCompile Include="test\list_test.cpp" />
+    <ClCompile Include="test\memory_test.cpp" />
     <ClCompile Include="test\string_test.cpp" />
     <ClCompile Include="test\vector_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="test\string_test.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B80D5861-4DD8-4107-8156-84DCCBA03829}</ProjectGuid>
